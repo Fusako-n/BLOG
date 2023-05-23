@@ -1,6 +1,14 @@
 {% extends 'blogsite/base.html' %}
+{% load param_change %}
 
 {% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-warning" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
 <div class="row">
 
     {% for post in posts %}
@@ -10,7 +18,7 @@
                 <img src="..." class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">{{ post.title }}</h5>
-                    <p class="card-text">{{ post.content }}</p>
+                    <p class="card-text">{{ post.content | truncatechars:30 }}<br>タグ: {% for tag in post.tag.all %}{{ tag.name }} {% endfor %}</p>
                 </div>
                 <div class="card-footer">
                     <small class="text-muted">{{ post.created_at }}</small>
@@ -19,6 +27,28 @@
         </div>
     </div>
     {% endfor %}
+
+    <ul class="pagination justify-content-center">
+                
+        {% if posts.has_previous %}
+        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' '1' %}">最初のページ</a></li>
+        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' posts.previous_page_number %}">前のページ</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link">最初のページ</a></li>
+        <li class="page-item"><a class="page-link">前のページ</a></li>
+        {% endif %}
+
+        <li class="page-item"><a class="page-link">{{ posts.number }}</a></li>
+        
+        {% if posts.has_next %}
+        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' posts.next_page_number %}">次のページ</a></li>
+        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' posts.paginator.num_pages %}">最後のページ</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link">次のページ</a></li>
+        <li class="page-item"><a class="page-link">最後のページ</a></li>
+        {% endif %}
+    
+    </ul>
 
 </div>
 

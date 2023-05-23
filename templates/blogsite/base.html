@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -23,14 +24,14 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">カテゴリ</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">カテゴリ1</a></li>
-                            <li><a class="dropdown-item" href="#">カテゴリ2</a></li>
-                            <li><a class="dropdown-item" href="#">カテゴリ3</a></li>
+                            <li>{% for category in categories %}
+                                <option value="{{ category.id }}" {% if category.str_id == request.GET.category %}selected{% endif %}>{{ category.name }}（{{ category.topic_amount }}）</option>
+                                {% endfor %}</li>
                         </ul>
                     </li>
                 </ul>
                 <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <input class="form-control me-2" type="search" placeholder="キーワード検索" aria-label="Search" value="{{ request.GET.search }}">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>

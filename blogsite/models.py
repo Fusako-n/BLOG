@@ -8,6 +8,14 @@ class Category(models.Model):
     
     def __str__(self):
         return self.name
+    
+    # idを文字列型に変更するモデルメソッド
+    def str_id(self):
+        return str(self.id)
+    
+    # 投稿数を数えるモデルメソッド
+    def post_amount(self):
+        return Post.objects.filter(category=self.id).count()
 
 
 class Tag(models.Model):
