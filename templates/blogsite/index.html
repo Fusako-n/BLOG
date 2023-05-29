@@ -11,17 +11,20 @@
 
 <div class="row">
 
-    {% for post in posts %}
+    {% for topic in topics %}
     <div class="col-md-4">
         <div class="card mb-4">
             <div class="card h-100">
                 <img src="..." class="card-img-top" alt="...">
                 <div class="card-body">
-                    <h5 class="card-title">{{ post.title }}</h5>
-                    <p class="card-text">{{ post.content | truncatechars:30 }}<br>タグ: {% for tag in post.tag.all %}{{ tag.name }} {% endfor %}</p>
+                    <h5 class="card-title"><a href="{% url 'blogsite:topic_detail' topic.pk %}">{{ topic.title }}</a></h5>
+                    <p class="card-text">{{ topic.text | safe | linebreaksbr | truncatechars:50 }}<br>
+                        <br>カテゴリ： {{ topic.category }}<br>
+                        タグ: {% for tag in topic.tag.all %}{{ tag.name }}, {% endfor %}<br>
+                        いいね： {{ topic.good_amount }}</p>
                 </div>
                 <div class="card-footer">
-                    <small class="text-muted">{{ post.created_at }}</small>
+                    <small class="text-muted">更新日： {{ topic.updated_at }}</small>
                 </div>
             </div>
         </div>
@@ -30,19 +33,19 @@
 
     <ul class="pagination justify-content-center">
                 
-        {% if posts.has_previous %}
+        {% if topics.has_previous %}
         <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' '1' %}">最初のページ</a></li>
-        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' posts.previous_page_number %}">前のページ</a></li>
+        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' topics.previous_page_number %}">前のページ</a></li>
         {% else %}
         <li class="page-item"><a class="page-link">最初のページ</a></li>
         <li class="page-item"><a class="page-link">前のページ</a></li>
         {% endif %}
 
-        <li class="page-item"><a class="page-link">{{ posts.number }}</a></li>
+        <li class="page-item"><a class="page-link">{{ topics.number }}</a></li>
         
-        {% if posts.has_next %}
-        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' posts.next_page_number %}">次のページ</a></li>
-        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' posts.paginator.num_pages %}">最後のページ</a></li>
+        {% if topics.has_next %}
+        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' topics.next_page_number %}">次のページ</a></li>
+        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' topics.paginator.num_pages %}">最後のページ</a></li>
         {% else %}
         <li class="page-item"><a class="page-link">次のページ</a></li>
         <li class="page-item"><a class="page-link">最後のページ</a></li>

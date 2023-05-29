@@ -1,0 +1,27 @@
+{% extends 'blogsite/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>投稿の編集</h2>
+    <form action="{% url 'blogsite:topic_edit' topic.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>タグ：
+                {% for tag in tags %}
+                <input type="checkbox" name="checkbox" value="{{ tag.id }}" {% if topic.tag.id == tag.id %}checked{% endif %}>{{ tag.name }}
+                {% endfor %}
+            </label>
+        </div>
+        <div class="form-group">
+            <select name="category">
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if topic.category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">タイトル： {{ form.title }}</div>
+        <div class="form-group">内容： {{ form.text }}</div>
+        <button class="btn btn-success" type="submit">更新</button>
+    </form>
+</div>
+{% endblock content %}

@@ -3,7 +3,8 @@ from django_summernote.widgets import SummernoteWidget
 from django.conf import settings
 import bleach
 
-from .models import Post
+from .models import Topic, Good
+
 
 class HTMLField(forms.CharField):
 
@@ -16,29 +17,35 @@ class HTMLField(forms.CharField):
         return bleach.clean(value, tags=settings.ALLOWED_TAGS, attributes=settings.ATTRIBUTES)
 
 
-class PostForm(forms.ModelForm):
+class TopicForm(forms.ModelForm):
     class Meta:
-        model   = Post
-        fields  = ['title', 'category', 'tag', 'content']
+        model   = Topic
+        fields  = ['title', 'category', 'tag', 'text']
 
-    content = HTMLField()
+    text = HTMLField()
 
 
-class PostCategoryForm(forms.ModelForm):
+class TopicCategoryForm(forms.ModelForm):
     class Meta:
-        model = Post
+        model = Topic
         fields = ['category']
 
 
-class PostTagForm(forms.ModelForm):
+class TopicTagForm(forms.ModelForm):
     class Meta:
-        model = Post
+        model = Topic
         fields = ['tag']
 
 
-class PostAdminForm(forms.ModelForm):
+class TopicAdminForm(forms.ModelForm):
     class Meta:
-        model = Post
-        fields = ['title', 'content', 'author', 'category', 'tag']
+        model = Topic
+        fields = ['title', 'text', 'author', 'category', 'tag']
 
-    content = HTMLField()
+    text = HTMLField()
+
+
+class GoodForm(forms.ModelForm):
+    class Meta:
+        model = Good
+        fields = ['topic', 'ip']

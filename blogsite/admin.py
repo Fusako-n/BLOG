@@ -1,22 +1,22 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Post, Category, Tag
-from .forms import PostAdminForm
+from .models import Topic, Category, Tag
+from .forms import TopicAdminForm
 
 
-class PostAdmin(admin.ModelAdmin):
-    list_display = ['id', 'category', 'title', 'author', 'created_at', 'updated_at', 'format_tag']
+class TopicAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'category', 'author', 'format_tag']
     list_filter = ['author']
-    form = PostAdminForm
+    form = TopicAdminForm
     
     def format_tag(self, obj):
         tag_str = ''
         if obj.tag:
             for tag in obj.tag.all():
-                tag_str += tag.name + ','
-            return format_html('<div>{}</div>', tag_str)
+                tag_str += tag.name + ', '
+            return format_html(f'<div>{tag_str}</div>')
 
-admin.site.register(Post, PostAdmin)
+admin.site.register(Topic, TopicAdmin)
 admin.site.register(Category)
 admin.site.register(Tag)

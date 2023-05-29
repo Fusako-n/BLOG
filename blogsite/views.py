@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.db.models import Q
 from django.core.paginator import Paginator
 
-from .models import Category, Tag, Post
-from .forms import PostForm, PostCategoryForm, PostTagForm
+from .models import Category, Tag, Topic, Good
+from .forms import TopicForm, TopicCategoryForm, TopicTagForm, GoodForm
 
 
 class IndexView(View):
@@ -16,39 +16,39 @@ class IndexView(View):
             for word in words:
                 if word == '':
                     continue
-                query &= Q(content__icontains=word)
+                query &= Q(text__icontains=word)
         
         # カテゴリ検索
-        form = PostCategoryForm(request.GET)
+        form = TopicCategoryForm(request.GET)
         if form.is_valid():
             cleaned = form.clean()
             if cleaned['category']:
                 query &= Q(category=cleaned['category'])
-        posts = Post.objects.filter(query).order_by('-created_at')
+        topics = Topic.objects.filter(query).order_by('-created_at')
         
         # タグ検索
-        form = PostTagForm(request.GET)
+        form = TopicTagForm(request.GET)
         if form.is_valid():
             cleaned = form.clean()
             selected_tags = cleaned['tag']
             for tag in selected_tags:
-                posts = [post for post in posts if tag in post.tag.all()]
+                topics = [topic for topic in topics if tag in topic.tag.all()]
         
         # ページネーション
-        paginator = Paginator(posts, 6)
+        paginator = Paginator(topics, 6)
         if 'page' in request.GET:
-            posts = paginator.get_page(request.GET['page'])
+            topics = paginator.get_page(request.GET['page'])
         else:
-            posts = paginator.get_page(1)
+            topics = paginator.get_page(1)
         
         categories = Category.objects.all()
         tags = Tag.objects.all()
-        form = PostForm
-        context = {'posts': posts, 'categories': categories, 'tags': tags, 'form': form}
+        form = TopicForm
+        context = {'topics': topics, 'categories': categories, 'tags': tags, 'form': form}
         return render(request, 'blogsite/index.html', context)
     
     def post(self, request, *args, **kwargs):
-        form = PostForm(request.POST)
+        form = TopicForm(request.POST)
         if not form.is_valid():
             values = form.errors.get_json_data().values()
             for value in values:
@@ -56,41 +56,83 @@ class IndexView(View):
                     messages.error(request, v['message'])
             return redirect('blogsite:index')
         form.save()
-        messages.info(request, '投稿内容を保存しました！')
+        messages.info(request, '投稿内容を保存しました')
         return redirect('blogsite:index')
 
 index = IndexView.as_view()
 
 
-class PostDeleteView(View):
+class TopicDetailView(View):
+    def get(self, request, pk, *args, **kwargs):
+        context = {}
+        context['topic'] = Topic.objects.filter(id=pk).first()
+        return render(request, 'blogsite/topic_detail.html', context)
+
+topic_detail = TopicDetailView.as_view()
+
+
+class TopicDeleteView(View):
     def post(self, request, pk, *args, **kwargs):
-        post = Post.objects.filter(id=pk).first()
-        if post:
-            post.delete()
+        topic = Topic.objects.filter(id=pk).first()
+        if topic:
+            topic.delete()
         else:
             print('対象のデータは見つかりませんでした')
         return redirect('blogsite:index')
 
-post_delete = PostDeleteView.as_view()
+topic_delete = TopicDeleteView.as_view()
 
 
-class PostEditView(View):
-    def get(self, request, pk, *args, **kwargs):
-        post = Post.objects.filter(id=pk).first()
-        categories = Category.objects.all()
-        tags = Tag.objects.all()
-        form = PostForm(instance=post)
-        context = {'post': post, 'categories': categories, 'tags': tags, 'form': form}
-        return render(request, 'blogsite/post_edit.html', context)
-    
+class TopicGoodView(View):
     def post(self, request, pk, *args, **kwargs):
-        post = Post.objects.filter(id=pk).first()
-        form = PostForm(request.POST, instance=post)
+        topic = Topic.objects.filter(id=pk).first()
+        
+        # X-Forwarded-For(XFF)ヘッダー（クライアントの送信元IPアドレスを特定する標準となっているヘッダー）を参照して転送経路のIPアドレスを取得
+        ip_list = request.META.get('HTTP_X_FORWARDED_FOR')
+        # XFFヘッダーがある場合は転送経路の先頭要素を取得
+        if ip_list:
+            ip = ip_list.split(',')[0]
+        # なければ直接接続なのでRemote-Addrヘッダーを参照
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        
+        dic = {}
+        dic['ip'] = ip
+        dic['topic'] = pk
+        form = GoodForm(dic)
+        
+        # unique_togetherをしているので、すでにいいねをしている場合は保存されない
         if form.is_valid():
             form.save()
-            messages.info(request, '投稿内容を変更しました！')
+        else:
+            print('すでにいいねしています')
+            
+            # いいねの解除
+            # good = Good.objects.filter(topic=pk, ip=ip).first()
+            # good.delete()
+        
+        return redirect('blogsite:topic_detail', pk)
+
+topic_good = TopicGoodView.as_view()
+
+
+class TopicEditView(View):
+    def get(self, request, pk, *args, **kwargs):
+        topic = Topic.objects.filter(id=pk).first()
+        categories = Category.objects.all()
+        tags = Tag.objects.all()
+        form = TopicForm(instance=topic)
+        context = {'topic': topic, 'categories': categories, 'tags': tags, 'form': form}
+        return render(request, 'blogsite/topic_edit.html', context)
+    
+    def post(self, request, pk, *args, **kwargs):
+        topic = Topic.objects.filter(id=pk).first()
+        form = TopicForm(request.POST, instance=topic)
+        if form.is_valid():
+            form.save()
+            messages.info(request, '投稿内容を変更しました')
         else:
             messages.info(request, 'バリデーションNG')
         return redirect('blogsite:index')
 
-post_edit = PostEditView.as_view()
+topic_edit = TopicEditView.as_view()
