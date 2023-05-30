@@ -8,7 +8,7 @@
         <div class="form-group">
             <label>タグ：
                 {% for tag in tags %}
-                <input type="checkbox" name="checkbox" value="{{ tag.id }}" {% if topic.tag.id == tag.id %}checked{% endif %}>{{ tag.name }}
+                <input type="checkbox" name="checkbox" value="{{ tag.id }}" {% if tag in topic.tag.all %}checked{% endif %}>{{ tag.name }}
                 {% endfor %}
             </label>
         </div>
