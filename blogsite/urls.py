@@ -9,4 +9,5 @@ urlpatterns = [
     path('topic_good/<int:pk>/', views.topic_good, name='topic_good'),
     path('topic_delete/<int:pk>/', views.topic_delete, name='topic_delete'),
     path('topic_edit/<int:pk>/', views.topic_edit, name='topic_edit'),
+    path('topic_create/', views.topic_create, name='topic_create'),
 ]

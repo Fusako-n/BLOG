@@ -1,0 +1,26 @@
+{% extends 'blogsite/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>新規投稿</h2>
+    <form action="{% url 'blogsite:topic_create' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <select name="category">
+                <option value="">カテゴリ</option>
+                {% for category in CATEGORIES %}
+                    <option value="{{ category.id }}" {% if category.str_id == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            タグ：
+            {% for tag in TAGS %}
+            <input id="{{ tag.id }}" type="checkbox" name="tag" value="{{ tag.id }}">
+                <label for="{{ tag.id }}">{{ tag.name }}</label>
+            {% endfor %}
+        </div>
+        <div class="form-group">タイトル： {{ form.title }}</div>
+        <div class="form-group">内容： {{ form.text }}</div>
+        <button class="btn btn-success" type="submit">投稿</button>
+    </form>
+</div>
+{% endblock content %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.core.paginator import Paginator
 
@@ -47,17 +48,17 @@ class IndexView(View):
         context = {'topics': topics, 'categories': categories, 'tags': tags, 'form': form}
         return render(request, 'blogsite/index.html', context)
     
-    def post(self, request, *args, **kwargs):
-        form = TopicForm(request.POST)
-        if not form.is_valid():
-            values = form.errors.get_json_data().values()
-            for value in values:
-                for v in value:
-                    messages.error(request, v['message'])
-            return redirect('blogsite:index')
-        form.save()
-        messages.info(request, '投稿内容を保存しました')
-        return redirect('blogsite:index')
+    # def post(self, request, *args, **kwargs):
+    #     form = TopicForm(request.POST)
+    #     if not form.is_valid():
+    #         values = form.errors.get_json_data().values()
+    #         for value in values:
+    #             for v in value:
+    #                 messages.error(request, v['message'])
+    #         return redirect('blogsite:index')
+    #     form.save()
+    #     messages.info(request, '投稿内容を保存しました')
+    #     return redirect('blogsite:index')
 
 index = IndexView.as_view()
 
@@ -116,7 +117,8 @@ class TopicGoodView(View):
 topic_good = TopicGoodView.as_view()
 
 
-class TopicEditView(View):
+# 認証している場合に限り、このビューを実行する（認証していない場合はログインページにリダイレクト）
+class TopicEditView(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
         topic = Topic.objects.filter(id=pk).first()
         categories = Category.objects.all()
@@ -136,3 +138,23 @@ class TopicEditView(View):
         return redirect('blogsite:index')
 
 topic_edit = TopicEditView.as_view()
+
+
+class TopicCreateView(View):
+    def get(self, request, *args, **kwargs):
+        form = TopicForm()
+        return render(request, 'blogsite/topic_create.html', {'form': form})
+    
+    def post(self, request, *args, **kwargs):
+        form = TopicForm(request.POST)
+        if not form.is_valid():
+            values = form.errors.get_json_data().values()
+            for value in values:
+                for v in value:
+                    messages.error(request, v['message'])
+            return redirect('blogsite:index')
+        form.save()
+        messages.info(request, '投稿内容を保存しました')
+        return redirect('blogsite:index')
+
+topic_create = TopicCreateView.as_view()

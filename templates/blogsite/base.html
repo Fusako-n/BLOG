@@ -15,25 +15,18 @@
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="Navbar">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{% url 'blogsite:index' %}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="">ログイン</a>
-                        </li>
-                        
-                        <form action="" class="py-2">
+                        <form action="{% url 'blogsite:index' %}" class="py-2">
                             <li class="nav-item"></li>
                                 <select name="category">
                                     <option value="">カテゴリ検索</option>
-                                    {% for category in categories %}
+                                    {% for category in CATEGORIES %}
                                         <option value="{{ category.id }}" {% if category.str_id == request.GET.category %}selected{% endif %}>{{ category.name }}（{{ category.topic_amount }}）</option>
                                     {% endfor %}
                                 </select>
 
                                 タグ検索　
-                                    {% for tag in tags %}
-                                    <input id="{{ tag.id }}" type="checkbox" name="tag" value="{{ tag.id }}">
+                                    {% for tag in TAGS %}
+                                    <input id="{{ tag.id }}" type="checkbox" name="tag" value="{{ tag.id }}" {# ここでカスタムテンプレートタグ #}>
                                         <label for="{{ tag.id }}">{{ tag.name }}</label>
                                     {% endfor %}
 
@@ -42,6 +35,24 @@
                             </li>
                         </form>
                     </ul>
+                    <div class="collapse navbar-collapse justify-content-end">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                {% if request.user.is_authenticated %}
+                                <a class="nav-link active" aria-current="page" href="{% url 'account_logout' %}">ログアウト</a>
+                                {% else %}
+                                <a class="nav-link active" aria-current="page" href="{% url 'account_login' %}">ログイン</a>
+                                {% endif %}
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'blogsite:topic_create' %}">新規投稿</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="{% url 'blogsite:index' %}">Home</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>

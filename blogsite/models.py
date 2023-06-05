@@ -31,7 +31,7 @@ class Topic(models.Model):
     title = models.CharField(verbose_name='タイトル', max_length=100)
     text = models.TextField(verbose_name='内容')
     author = models.CharField(verbose_name='書いた人', max_length=10)
-    image = models.ImageField(upload_to='images/', blank=True)
+    image = models.ImageField(upload_to='images/', blank=True, default='images/noimage.png')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

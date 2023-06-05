@@ -25,13 +25,21 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# django-allauth
+SITE_ID = 1  # django.contrib.sitesで使用するSITE_IDを指定
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 # Application definition
-
 INSTALLED_APPS = [
     'blogsite.apps.BlogsiteConfig',
     'blogsite.templatetags.param_change',
     'django_summernote',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,7 +63,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates',
+                 BASE_DIR / 'templates' / 'allauth',
+                 ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -63,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'blogsite.context.search_context',
             ],
         },
     },
@@ -143,7 +154,7 @@ ALLOWED_TAGS = [
     'abbr', 'acronym', 'b', 'blockquote', 'code', 'strike', 'u', 'sup', 'sub','font'
 ]
 ATTRIBUTES = { 
-    '*': ['style', 'align', 'title', ],
+    '*': ['style', 'align', 'title', 'style' ],
     'a': ['href', ],
     'img': ['src', ],
 }

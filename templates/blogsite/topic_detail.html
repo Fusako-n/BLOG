@@ -14,7 +14,7 @@
                         <a href="{% url 'blogsite:topic_edit' topic.pk %}" class="btn btn-success">編集</a>
                         <form action="{% url 'blogsite:topic_delete' topic.pk %}" method="POST">
                             {% csrf_token %}
-                            <input class="btn btn-danger" type="submit" value="削除">
+                            <input class="btn btn-danger" type="submit" onclick='return confirm("本当に削除しますか？");' value="削除">
                         </form>
                         <form action="{% url 'blogsite:topic_good' topic.pk %}" method="POST">
                             {% csrf_token %}
