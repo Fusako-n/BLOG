@@ -134,7 +134,7 @@ class TopicEditView(LoginRequiredMixin, View):
             form.save()
             messages.info(request, '投稿内容を変更しました')
         else:
-            messages.info(request, 'バリデーションNG')
+            messages.info(request, 'バリデーションNGです')
         return redirect('blogsite:index')
 
 topic_edit = TopicEditView.as_view()

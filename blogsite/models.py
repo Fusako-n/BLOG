@@ -1,4 +1,5 @@
 from django.db import models
+import bs4
 
 
 class Category(models.Model):
@@ -16,6 +17,10 @@ class Category(models.Model):
     # 投稿数を数えるモデルメソッド
     def topic_amount(self):
         return Topic.objects.filter(category=self.id).count()
+    
+    # 同じカテゴリのトピックを取得するモデルメソッド
+    def topic(self):
+        return Topic.objects.filter(category=self.id)
 
 
 class Tag(models.Model):
@@ -41,6 +46,11 @@ class Topic(models.Model):
     # いいねを数えるモデルメソッド
     def good_amount(self):
         return Good.objects.filter(topic=self.id).count()
+    
+    # summernote装飾をしていても一覧表示でレイアウトが崩れないようにするモデルメソッド
+    def plain_text(self):
+        soup = bs4.BeautifulSoup(self.text, 'html.parser')
+        return soup.get_text()  # HTMLタグを除去した文字列を返す
 
 
 class Good(models.Model):

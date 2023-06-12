@@ -25,6 +25,13 @@
             </div>
         </div>
         <br>
+        <hr>
+        <h2>関連記事</h2>
+        {# topicはTopicモデルクラスのオブジェクト、そこからcategoryフィールドを経由して、Categoryのtopicsメソッドを呼び出す #}
+        {% for category_topic in topic.category.topics %}
+        <a href="{% url 'blogsite:topic_detail' category_topic.id %}" class="border d-block">{{ category_topic.title }}</a>
+        {% endfor %}
+        <hr>
         <a href="{% url 'blogsite:index' %}">トップページへ戻る</a>
     </div>
 </div>

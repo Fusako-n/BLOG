@@ -6,11 +6,12 @@
     <form action="{% url 'blogsite:topic_edit' topic.id %}" method="POST">
         {% csrf_token %}
         <div class="form-group">
-            <label>タグ：
-                {% for tag in tags %}
+            タグ：
+            {% for tag in tags %}
+            <label>
                 <input type="checkbox" name="checkbox" value="{{ tag.id }}" {% if tag in topic.tag.all %}checked{% endif %}>{{ tag.name }}
-                {% endfor %}
             </label>
+            {% endfor %}
         </div>
         <div class="form-group">
             <select name="category">
