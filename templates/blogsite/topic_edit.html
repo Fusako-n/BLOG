@@ -9,7 +9,7 @@
             タグ：
             {% for tag in tags %}
             <label>
-                <input type="checkbox" name="checkbox" value="{{ tag.id }}" {% if tag in topic.tag.all %}checked{% endif %}>{{ tag.name }}
+                <input type="checkbox" name="tag" value="{{ tag.id }}" {% if tag in topic.tag.all %}checked{% endif %}>{{ tag.name }}
             </label>
             {% endfor %}
         </div>

@@ -9,13 +9,13 @@
     {% endfor %}
 {% endif %}
 
-<div class="row">
+<div class="row mb-2">
 
     {% for topic in topics %}
     <div class="col-md-4">
         <div class="card mb-4">
             <div class="card h-100">
-                <img src="..." class="card-img-top" alt="...">
+
                 <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'blogsite:topic_detail' topic.pk %}">{{ topic.title }}</a></h5>
                     <p class="card-text">{{ topic.plain_text | linebreaksbr | truncatechars:50 }}<br>

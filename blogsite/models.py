@@ -19,7 +19,7 @@ class Category(models.Model):
         return Topic.objects.filter(category=self.id).count()
     
     # 同じカテゴリのトピックを取得するモデルメソッド
-    def topic(self):
+    def topics(self):
         return Topic.objects.filter(category=self.id)
 
 

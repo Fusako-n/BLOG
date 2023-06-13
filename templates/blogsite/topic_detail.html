@@ -5,20 +5,24 @@
     <div class="col-md-9">
         <br>
         <div class="card">
-            <img src="..." alt="カードの画像" class="card-img-top">
+
             <div class="card-body">
-                <h5 class="card-title">{{ topic.title }}</h5>
+                <h2 class="card-title">{{ topic.title }}</h2>
                 <p class="card-text">{{ topic.text | safe }}</p>
+                <br>
+                <hr>
+                <p>{{ topic.category }}</p>
+                <p>タグ: {% for tag in topic.tag.all %}{{ tag.name }}, {% endfor %}</p>
                 <div class="btn-toolbar">
                     <div class="btn-group">
-                        <a href="{% url 'blogsite:topic_edit' topic.pk %}" class="btn btn-success">編集</a>
+                        <a href="{% url 'blogsite:topic_edit' topic.pk %}" class="btn btn-success m-1">編集</a>
                         <form action="{% url 'blogsite:topic_delete' topic.pk %}" method="POST">
                             {% csrf_token %}
-                            <input class="btn btn-danger" type="submit" onclick='return confirm("本当に削除しますか？");' value="削除">
+                            <input class="btn btn-danger m-1" type="submit" onclick='return confirm("本当に削除しますか？");' value="削除">
                         </form>
                         <form action="{% url 'blogsite:topic_good' topic.pk %}" method="POST">
                             {% csrf_token %}
-                            <input class="btn btn-warning" type="submit" value="いいね({{ topic.good_amount }})">
+                            <input class="btn btn-warning m-1" type="submit" value="いいね({{ topic.good_amount }})">
                         </form>
                     </div>
                 </div>
@@ -26,7 +30,7 @@
         </div>
         <br>
         <hr>
-        <h2>関連記事</h2>
+        <h3>同じカテゴリの記事</h3>
         {# topicはTopicモデルクラスのオブジェクト、そこからcategoryフィールドを経由して、Categoryのtopicsメソッドを呼び出す #}
         {% for category_topic in topic.category.topics %}
         <a href="{% url 'blogsite:topic_detail' category_topic.id %}" class="border d-block">{{ category_topic.title }}</a>
