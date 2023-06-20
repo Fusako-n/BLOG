@@ -44,7 +44,7 @@ class IndexView(View):
         
         categories = Category.objects.all()
         tags = Tag.objects.all()
-        form = TopicForm
+        form = TopicForm  # summernoteを入れたい時にTopicFormのオブジェクトをcontextに入れてレンダリング
         context = {'topics': topics, 'categories': categories, 'tags': tags, 'form': form}
         return render(request, 'blogsite/index.html', context)
     
@@ -129,7 +129,7 @@ class TopicEditView(LoginRequiredMixin, View):
     
     def post(self, request, pk, *args, **kwargs):
         topic = Topic.objects.filter(id=pk).first()
-        form = TopicForm(request.POST, instance=topic)
+        form = TopicForm(request.POST, request.FILES, instance=topic)
         if form.is_valid():
             form.save()
             messages.info(request, '投稿内容を変更しました')
@@ -143,10 +143,11 @@ topic_edit = TopicEditView.as_view()
 class TopicCreateView(View):
     def get(self, request, *args, **kwargs):
         form = TopicForm()
-        return render(request, 'blogsite/topic_create.html', {'form': form})
+        context = {'form': form}
+        return render(request, 'blogsite/topic_create.html', context)
     
     def post(self, request, *args, **kwargs):
-        form = TopicForm(request.POST)
+        form = TopicForm(request.POST, request.FILES)  # 画像もバリデーションして保存
         if not form.is_valid():
             values = form.errors.get_json_data().values()
             for value in values:

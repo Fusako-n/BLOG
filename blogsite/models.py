@@ -51,6 +51,15 @@ class Topic(models.Model):
     def plain_text(self):
         soup = bs4.BeautifulSoup(self.text, 'html.parser')
         return soup.get_text()  # HTMLタグを除去した文字列を返す
+    
+    # summernoteにセットされた画像を抜き取ってサムネイルにするモデルメソッド
+    def text_thumbnail(self):
+        soup = bs4.BeautifulSoup(self.text, 'html.parser')
+        img_elems = soup.select('img')
+        if len(img_elems) >= 1:
+            return str(img_elems[0])  # 一番最初のimgタグを抜き取る
+        else:
+            return '<img src="/media/images/noimage.png" alt="サムネイル" style="max_width:100%; max-height:10rem;">'
 
 
 class Good(models.Model):

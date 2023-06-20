@@ -18,6 +18,9 @@
 
                 <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'blogsite:topic_detail' topic.pk %}">{{ topic.title }}</a></h5>
+                    <div class="text-center">
+                        {{ topic.text_thumbnail|safe }}
+                    </div>
                     <p class="card-text">{{ topic.plain_text | linebreaksbr | truncatechars:50 }}<br>
                         <br>カテゴリ： {{ topic.category }}<br>
                         タグ: {% for tag in topic.tag.all %}{{ tag.name }}, {% endfor %}<br>

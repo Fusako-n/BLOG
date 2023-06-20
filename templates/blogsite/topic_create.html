@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <h2>新規投稿</h2>
-    <form action="{% url 'blogsite:topic_create' %}" method="POST">
+    <form action="{% url 'blogsite:topic_create' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
             <select name="category">
@@ -18,6 +18,15 @@
                 <label for="{{ tag.id }}">{{ tag.name }}</label>
             {% endfor %}
         </div>
+        <!-- <div class="form-group">サムネイル： {{ form.image }}
+            <label class="image_input_area">
+                <input class="image_input" type="file" name="image" accept="image/*">
+
+                <div class="image_input_icon"><i class="fa-regular fa-image"></i></div>
+                <img class="image_input_preview" src="" alt="">
+
+            </label>
+        </div> -->
         <div class="form-group">タイトル： {{ form.title }}</div>
         <div class="form-group">内容： {{ form.text }}</div>
         <button class="btn btn-success" type="submit">投稿</button>

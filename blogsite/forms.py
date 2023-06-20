@@ -20,7 +20,7 @@ class HTMLField(forms.CharField):
 class TopicForm(forms.ModelForm):
     class Meta:
         model   = Topic
-        fields  = ['title', 'category', 'tag', 'text']
+        fields  = ['title', 'category', 'tag', 'text', 'image']
 
     text = HTMLField()
 
