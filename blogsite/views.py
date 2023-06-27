@@ -6,7 +6,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 
 from .models import Category, Tag, Topic, Good
-from .forms import TopicForm, TopicCategoryForm, TopicTagForm, GoodForm
+from .forms import TopicForm, TopicCategoryForm, TopicTagForm, GoodForm, CustomUserEditForm
+from users.models import CustomUser
 
 
 class IndexView(View):
@@ -159,3 +160,34 @@ class TopicCreateView(View):
         return redirect('blogsite:index')
 
 topic_create = TopicCreateView.as_view()
+
+
+class MypageView(View):
+    def get(self, request, *args, **kwargs):
+        # user = CustomUser.objects.filter(id=request.user.id).first()
+        return render(request, 'blogsite/mypage.html')
+
+mypage = MypageView.as_view()
+
+
+class MypageEditView(View):
+    def get(self, request, *args, **kwargs):
+        user = CustomUser.objects.filter(id=request.user.id).first()
+        form = CustomUserEditForm(instance=user)
+        context = {'user': user, 'form': form}
+        return render(request, 'blogsite/mypage_edit.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        # 編集対象のモデルオブジェクトを特定
+        user = CustomUser.objects.filter(id=request.user.id).first()
+        
+        # フォームクラスでバリデーション
+        form = CustomUserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.info(request, 'プロフィール内容を更新しました')
+        else:
+            messages.info(request, 'バリデーションNGです')
+        return redirect('blogsite:mypage')
+
+mypage_edit = MypageEditView.as_view()

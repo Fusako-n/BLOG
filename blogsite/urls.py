@@ -10,4 +10,6 @@ urlpatterns = [
     path('topic_delete/<int:pk>/', views.topic_delete, name='topic_delete'),
     path('topic_edit/<int:pk>/', views.topic_edit, name='topic_edit'),
     path('topic_create/', views.topic_create, name='topic_create'),
+    path('mypage/', views.mypage, name='mypage'),
+    path('mypage_edit/', views.mypage_edit, name='mypage_edit'),
 ]

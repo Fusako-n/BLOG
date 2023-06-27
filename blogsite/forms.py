@@ -50,3 +50,17 @@ class GoodForm(forms.ModelForm):
     class Meta:
         model = Good
         fields = ['topic', 'ip']
+
+
+
+from users.models import CustomUser
+
+class CustomUserEditForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'introduction']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'

@@ -1,0 +1,27 @@
+{% extends 'blogsite/base.html' %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-warning" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<div class="container">
+    <div class="row">
+        <h2>{{ user.username }}さんの情報</h2>
+        <hr>
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">名： {{ user.first_name }}</li>
+                <li class="list-group-item">姓： {{ user.last_name }}</li>
+                <li class="list-group-item">自己紹介文： {{ user.introduction }}</li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <a class="btn btn-primary" href="{% url 'blogsite:mypage_edit' %}">登録情報の変更</a>
+</div>
+
+{% endblock content %}

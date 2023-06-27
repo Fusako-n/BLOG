@@ -34,6 +34,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 INSTALLED_APPS = [
     'blogsite.apps.BlogsiteConfig',
     'blogsite.templatetags.param_change',
+    'users.apps.UsersConfig',
     'django_summernote',
     'django.contrib.sites',
     'django_cleanup',
@@ -48,6 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'  # 認証時に使用するユーザーモデル
+ACCOUNT_FORMS = {'signup': 'users.forms.SignupForm'}  # アカウント新規作成時のフォームを指定
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

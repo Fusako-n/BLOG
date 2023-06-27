@@ -1,0 +1,19 @@
+{% extends 'blogsite/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="first_name">名：</label>{{ form.first_name }}</div>
+        <div class="form-group">
+            <label for="last_name">姓：</label>{{ form.last_name }}</div>
+        <div class="form-group">
+            <label for="introduction">自己紹介文：</label>{{ form.introduction }}</div>
+        <br>
+        <button class="btn btn-success" type="submit">更新</button>
+    </form>
+</div>
+
+{% endblock content %}
